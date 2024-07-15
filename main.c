@@ -40,11 +40,14 @@ int main(int argc, char **argv)
 		return (write(2, "Wrong argument count\n", 22), 1);
 	if(validation_arg(argv) == 1)
 		return (1);
-	
-	program_initialize(&program, philos);
-	forks_initialize(forks, ft_atoi(argv[1]));
-	philos_initialize(philos, &program, forks, argv);
-	crt_thrd(&program, forks);
+
+	program.philos = philos;
+	program.forks = forks;
+	forks_initialize(forks,ft_atoi(argv[1]));
+	program_initialize(&program);
+	//forks_initialize(forks, ft_atoi(argv[1]));
+	philos_initialize(&program,argv);
+	crt_thrd(&program);
 	destroy_all(NULL, &program, forks);
 	return (0);
 }

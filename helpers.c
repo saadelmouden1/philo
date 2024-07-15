@@ -52,7 +52,7 @@ void destroy_all(char *str, t_program *program,  pthread_mutex_t *forks)
 	pthread_mutex_destroy(&program->write_lock);
 	 pthread_mutex_destroy(&program->meal_lock);  
 	  pthread_mutex_destroy(&program->dead_lock);
-	while(i < program->philos[0].nm_philos)
+	while(i < program->nm_philos)
 	  {
 		  pthread_mutex_destroy(&forks[i]);
 		  i++;
