@@ -17,7 +17,7 @@ void dream(t_philo *philo)
 void eat(t_philo *philo)
 {
 	pthread_mutex_lock(philo->r_fork);
-	print_message("has take a fork", philo, philo->id);
+	print_message("has taken a fork", philo, philo->id);
 	if(philo->table->nm_philos == 1)
 	{
 		ft_usleep(philo->table->time_for_die);
