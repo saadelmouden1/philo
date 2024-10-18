@@ -1,13 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   threads.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sel-moud <sel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/18 14:43:26 by sel-moud          #+#    #+#             */
+/*   Updated: 2024/10/18 14:43:29 by sel-moud         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-int dead_loop(t_program *program)
+int dead_loop(t_philo *philo)
 {
-	pthread_mutex_lock(&program->dead_lock);
-	if(program->f_dead == 1)
-		return (pthread_mutex_unlock(&program->dead_lock), 1);
-	pthread_mutex_unlock(&program->dead_lock);
+	pthread_mutex_lock(philo->dead_lock);
+	if(*philo->dead == 1)
+		return (pthread_mutex_unlock(philo->dead_lock), 1);
+	pthread_mutex_unlock(philo->dead_lock);
 return(0);
 }
+
+
 
 void *routine(void *p)
 {
@@ -16,8 +30,9 @@ void *routine(void *p)
 	philo = (t_philo *)p;
 	if(philo->id % 2 == 0)
 		ft_usleep(1);
-	while(!dead_loop(philo->table))
+	while(!dead_loop(philo))
 	{
+	//	print_message("is hear", philo, philo->id);
 		eat(philo);
 		dream(philo);
 		think(philo);
@@ -25,29 +40,30 @@ void *routine(void *p)
 	return (p);
 }
 
-int crt_thrd(t_program *program)
+int crt_thrd(t_program *program, pthread_mutex_t * forks)
 {
 	pthread_t	ob;
 	int		i;
 
-	if(pthread_create(&ob, NULL, &monitor, program->philos))
-			destroy_all("thread creation error", program, program->forks);
+	if(pthread_create(&ob, NULL, &monitor, program->philos) != 0)
+			destroy_all("thread creation error", program,forks);
 	
 	i = 0;
-	while(i <program->nm_philos)
+	while(i <program->philos[0].nm_philos)
 	{
 		if(pthread_create(&program->philos[i].thread, NULL, &routine,
 					&program->philos[i])!=0)
-			destroy_all("thread creation error", program, program->forks);
+			destroy_all("thread creation error", program, forks);
 		i++;
 	}
 	i = 0;
 	if(pthread_join(ob,NULL) != 0)
-		destroy_all("thread join error", program, program->forks);
-	while(i < program->nm_philos)
+		destroy_all("thread join error", program, forks);
+	//i = 0;
+	while(i < program->philos[0].nm_philos)
 	{
 		if(pthread_join(program->philos[i].thread, NULL) != 0)
-			destroy_all("thread join error", program, program->forks);
+			destroy_all("thread join error", program, forks);
 		i++;
 	}
 	return (0);

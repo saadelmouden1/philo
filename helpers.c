@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   helpers.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sel-moud <sel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/18 14:43:47 by sel-moud          #+#    #+#             */
+/*   Updated: 2024/10/18 14:44:06 by sel-moud         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 int ft_strlen(char *str)
@@ -16,27 +28,26 @@ int ft_strlen(char *str)
 
 int	ft_atoi(char *str)
 {
-	unsigned long long	nbr;
-	int	s;
-	int	i;
+	unsigned long long	nb;
+	int					sign;
+	int					i;
 
-	nbr = 0;
-	s = 1;
+	nb = 0;
+	sign = 1;
 	i = 0;
-	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n'
-			|| str[i] == '\v' || str[i] == '\f' || str[i] == '\r')
+	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || str[i] == '\v'
+		|| str[i] == '\f' || str[i] == '\r')
 		i++;
-	if(str[i] == '-')
-		s = -1;
-	if(str[i] == '-' || str[i] == '+')
+	if (str[i] == '-')
+		sign = -1;
+	if (str[i] == '-' || str[i] == '+')
 		i++;
-	while(str[i] >= '0' && str[i] < '9')
+	while (str[i] >= '0' && str[i] <= '9')
 	{
-		nbr = nbr * 10 + (str[i] - '0');
+		nb = nb * 10 + (str[i] - '0');
 		i++;
 	}
-	return (s * nbr);
-
+	return (sign * nb);
 }
 
 void destroy_all(char *str, t_program *program,  pthread_mutex_t *forks)
@@ -52,9 +63,8 @@ void destroy_all(char *str, t_program *program,  pthread_mutex_t *forks)
 	pthread_mutex_destroy(&program->write_lock);
 	 pthread_mutex_destroy(&program->meal_lock);  
 	  pthread_mutex_destroy(&program->dead_lock);
-	while(i < program->nm_philos)
-	  {
-		  pthread_mutex_destroy(&forks[i]);
+	while(i < program->philos[0].nm_philos)
+	  {pthread_mutex_destroy(&forks[i]);
 		  i++;
 	  }	
 }

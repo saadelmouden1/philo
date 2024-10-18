@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sel-moud <sel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/18 14:43:38 by sel-moud          #+#    #+#             */
+/*   Updated: 2024/10/18 14:43:39 by sel-moud         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 int arguments_checking(char *arg)
@@ -24,7 +36,7 @@ int validation_arg(char **argv)
 		 return (write(2, "Invalide eating time\n", 21),1);
 	 if(ft_atoi(argv[4]) <= 0 || arguments_checking(argv[4]) == 1)
 		return (write(2, "Invalide sleep time\n", 20),1);
-	if(argv[5] && (ft_atoi(argv[5]) <= 0 || arguments_checking(argv[5]) == 1))
+	if(argv[5] && (ft_atoi(argv[5]) < 0 || arguments_checking(argv[5]) == 1))
 		return (write(2, "Invalide number of times each philosopher must eat\n",
 				51), 1);
 		return (0);
@@ -41,13 +53,12 @@ int main(int argc, char **argv)
 	if(validation_arg(argv) == 1)
 		return (1);
 
-	program.philos = philos;
-	program.forks = forks;
+	program_initialize(&program,philos);
 	forks_initialize(forks,ft_atoi(argv[1]));
-	program_initialize(&program);
+	//program_initialize(&program);
 	//forks_initialize(forks, ft_atoi(argv[1]));
-	philos_initialize(&program,argv);
-	crt_thrd(&program);
+	philos_initialize(philos,&program,forks,argv);
+	crt_thrd(&program,forks);
 	destroy_all(NULL, &program, forks);
 	return (0);
 }
